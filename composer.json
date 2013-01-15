@@ -1,0 +1,19 @@
+{
+    "name": "lbarulski/image-storage",
+    "require": {
+        "ext-gd": "0",
+        "ext-curl": "0"
+    },
+    "authors": [
+        {
+            "name": "lbarulski",
+            "email": "lukasz.barulski@docplanner.com"
+        }
+    ],
+	"autoload": {
+		"psr-0": {
+			"ImageStorage\\S3": "src/",
+			"ImageStorage\\Image": "src/"
+		}
+	}
+}
