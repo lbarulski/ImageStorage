@@ -13,7 +13,7 @@
 	"autoload": {
 		"psr-0": {
 			"ImageStorage\\S3": "src/",
-			"ImageStorage\\Image": "src/"
+			"ImageStorage\\Image": "src/",
 			"ImageStorage\\Image\\Struct": "src/"
 		}
 	}
