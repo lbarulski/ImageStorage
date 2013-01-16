@@ -7,7 +7,9 @@ class Image
 	private $_imageWidth = 0;
 	private $_imageHeight = 0;
 
-
+	/**
+	 * @param $file
+	 */
 	public function __construct($file)
 	{
 		$this->load($file);
