@@ -8,11 +8,72 @@ class Image
 	private $_imageHeight = 0;
 
 	/**
+	 * @param $fileName
+	 *
+	 * @return bool
+	 */
+	private function _load($fileName)
+	{
+		if (file_exists($fileName))
+		{
+			$image = $this->_loadImage($fileName);
+
+			if ($image != false)
+			{
+				list($this->_imageObject, $this->_imageWidth, $this->_imageHeight) = $image;
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param $file
+	 *
+	 * @return array|bool
+	 */
+	private function _loadImage($file)
+	{
+		$imageInformation = getimagesize($file);
+
+		switch ($imageInformation[2])
+		{
+			case 1:
+				// gif
+				$im = imagecreatefromgif($file);
+				break;
+
+			case 2:
+				// jpeg
+				$im = imagecreatefromjpeg($file);
+				break;
+
+			case 3:
+				// png
+				$im = imagecreatefrompng($file);
+				break;
+
+			default:
+				// other types
+				return false;
+				break;
+		}
+
+		return array(
+			$im,
+			$imageInformation[0],
+			$imageInformation[1]
+		);
+	}
+
+	/**
 	 * @param $file
 	 */
 	public function __construct($file)
 	{
-		$this->load($file);
+		$this->_load($file);
 	}
 
 	/**
@@ -88,7 +149,7 @@ class Image
 	{
 		if (file_exists($fileName))
 		{
-			$image = $this->loadImage($fileName);
+			$image = $this->_loadImage($fileName);
 
 			if ($image)
 			{
@@ -99,67 +160,6 @@ class Image
 		}
 
 		return false;
-	}
-
-	/**
-	 * @param $fileName
-	 *
-	 * @return bool
-	 */
-	public function load($fileName)
-	{
-		if (file_exists($fileName))
-		{
-			$image = $this->loadImage($fileName);
-
-			if ($image != false)
-			{
-				list($this->_imageObject, $this->_imageWidth, $this->_imageHeight) = $image;
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param $file
-	 *
-	 * @return array|bool
-	 */
-	private function loadImage($file)
-	{
-		$imageInformation = getimagesize($file);
-
-		switch ($imageInformation[2])
-		{
-			case 1:
-				// gif
-				$im = imagecreatefromgif($file);
-				break;
-
-			case 2:
-				// jpeg
-				$im = imagecreatefromjpeg($file);
-				break;
-
-			case 3:
-				// png
-				$im = imagecreatefrompng($file);
-				break;
-
-			default:
-				// other types
-				return false;
-				break;
-		}
-
-		return array(
-			$im,
-			$imageInformation[0],
-			$imageInformation[1]
-		);
 	}
 
 	/**
