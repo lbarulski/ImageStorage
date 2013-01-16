@@ -1,6 +1,6 @@
 <?php
-namespace ImageStorage\Image;
-class ImageCropStruct
+namespace ImageStorage\Image\Struct;
+class Crop
 {
 	public $x;
 	public $y;

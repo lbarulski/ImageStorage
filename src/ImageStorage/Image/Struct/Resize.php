@@ -1,6 +1,6 @@
 <?php
-namespace ImageStorage\Image;
-class ImageResizeStruct
+namespace ImageStorage\Image\Struct;
+class Resize
 {
 	public $width;
 	public $height;

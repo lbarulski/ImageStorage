@@ -8,11 +8,11 @@ class Image
 	private $_imageHeight = 0;
 
 	/**
-	 * @param ImageCropStruct $crop
+	 * @param Struct\Crop $crop
 	 *
 	 * @return bool
 	 */
-	public function crop(ImageCropStruct $crop)
+	public function crop(Struct\Crop $crop)
 	{
 		if ($this->_imageObject)
 		{
@@ -25,11 +25,11 @@ class Image
 	}
 
 	/**
-	 * @param ImageResizeStruct $resize
+	 * @param Struct\Resize $resize
 	 *
 	 * @return bool
 	 */
-	public function resize(ImageResizeStruct $resize)
+	public function resize(Struct\Resize $resize)
 	{
 		$newHeight = 0;
 		$newWidth = 0;
