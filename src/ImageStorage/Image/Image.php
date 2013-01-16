@@ -1,5 +1,6 @@
 <?php
 namespace ImageStorage\Image;
+
 class Image
 {
 	private $_imageObject = null;
@@ -7,19 +8,16 @@ class Image
 	private $_imageHeight = 0;
 
 	/**
-	 * @param $fromX
-	 * @param $fromY
-	 * @param $width
-	 * @param $height
+	 * @param ImageCropStruct $crop
 	 *
 	 * @return bool
 	 */
-	public function crop($fromX, $fromY, $width, $height)
+	public function crop(ImageCropStruct $crop)
 	{
 		if ($this->_imageObject)
 		{
-			$newIm = imagecreatetruecolor($width, $height);
-			imagecopyresized($newIm, $this->_imageObject, 0, 0, $fromX, $fromY, $width, $height, $width, $height);
+			$newIm = imagecreatetruecolor($crop->width, $crop->height);
+			imagecopyresized($newIm, $this->_imageObject, 0, 0, $crop->x, $crop->y, $crop->width, $crop->height, $crop->width, $crop->height);
 			$this->_imageObject = $newIm;
 			return true;
 		}
@@ -27,47 +25,45 @@ class Image
 	}
 
 	/**
-	 * @param int  $width
-	 * @param int  $height
-	 * @param bool $scale
+	 * @param ImageResizeStruct $resize
 	 *
 	 * @return bool
 	 */
-	public function resize($width = 0, $height = 0, $scale = true)
+	public function resize(ImageResizeStruct $resize)
 	{
 		$newHeight = 0;
 		$newWidth = 0;
 
 		if ($this->_imageObject)
 		{
-			if ($width == 0 && $height > 0)
+			if ($resize->width == 0 && $resize->height > 0)
 			{
-				$newHeight = $height;
-				$newWidth = $this->_imageWidth / ($this->_imageHeight / $height);
+				$newHeight = $resize->height;
+				$newWidth = $this->_imageWidth / ($this->_imageHeight / $resize->height);
 			}
-			elseif ($height == 0 && $width > 0)
+			elseif ($resize->height == 0 && $resize->width > 0)
 			{
-				$newHeight = $this->_imageHeight / ($this->_imageWidth / $width);
-				$newWidth = $width;
+				$newHeight = $this->_imageHeight / ($this->_imageWidth / $resize->width);
+				$newWidth = $resize->width;
 			}
-			elseif ($width > 0 && $height > 0)
+			elseif ($resize->width > 0 && $resize->height > 0)
 			{
-				if ($scale == false)
+				if ($resize->scale == false)
 				{
-					$newHeight = $height;
-					$newWidth = $width;
+					$newHeight = $resize->height;
+					$newWidth = $resize->width;
 				}
 				else
 				{
-					if ($height > $width)
+					if ($resize->height > $resize->width)
 					{
-						$newHeight = $height;
-						$newWidth = $this->_imageWidth / ($this->_imageHeight / $height);
+						$newHeight = $resize->height;
+						$newWidth = $this->_imageWidth / ($this->_imageHeight / $resize->height);
 					}
 					else
 					{
-						$newHeight = $this->_imageHeight / ($this->_imageWidth / $width);
-						$newWidth = $width;
+						$newHeight = $this->_imageHeight / ($this->_imageWidth / $resize->width);
+						$newWidth = $resize->width;
 					}
 				}
 			}
