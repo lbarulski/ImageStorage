@@ -3,9 +3,10 @@ namespace ImageStorage\Image;
 
 class Image
 {
-	private $_imageObject = null;
-	private $_imageWidth = 0;
-	private $_imageHeight = 0;
+	/**
+	 * @var Struct\Image
+	 */
+	private $_imageStruct;
 
 	/**
 	 * @param $fileName
@@ -16,12 +17,10 @@ class Image
 	{
 		if (file_exists($fileName))
 		{
-			$image = $this->_loadImage($fileName);
+			$this->_imageStruct = $this->loadImage($fileName);
 
-			if ($image != false)
+			if ($this->_imageStruct)
 			{
-				list($this->_imageObject, $this->_imageWidth, $this->_imageHeight) = $image;
-
 				return true;
 			}
 		}
@@ -31,10 +30,20 @@ class Image
 
 	/**
 	 * @param $file
-	 *
-	 * @return array|bool
 	 */
-	private function _loadImage($file)
+	public function __construct($file)
+	{
+		$this->_imageStruct = new Struct\Image;
+		$this->_load($file);
+	}
+
+	/**
+	 * @param $file
+	 *
+	 * @return Struct\Image
+	 * @throws \Exception
+	 */
+	public static function loadImage($file)
 	{
 		$imageInformation = getimagesize($file);
 
@@ -57,109 +66,31 @@ class Image
 
 			default:
 				// other types
-				return false;
-				break;
+				throw new \Exception('Invalid file type!');
 		}
 
-		return array(
-			$im,
-			$imageInformation[0],
-			$imageInformation[1]
-		);
+		return new Struct\Image($im, $imageInformation[0], $imageInformation[1]);
 	}
 
 	/**
-	 * @param $file
-	 */
-	public function __construct($file)
-	{
-		$this->_load($file);
-	}
-
-	/**
-	 * @param Struct\Crop $crop
-	 */
-	public function crop(Struct\Crop $crop)
-	{
-		$newIm = imagecreatetruecolor($crop->width, $crop->height);
-		imagecopyresized($newIm, $this->_imageObject, 0, 0, $crop->x, $crop->y, $crop->width, $crop->height, $crop->width, $crop->height);
-		$this->_imageObject = $newIm;
-	}
-
-	/**
-	 * @param Struct\Resize $resize
+	 * @param Struct\Transformation $transformationObject
 	 *
 	 * @return bool
+	 * @throws \Exception
 	 */
-	public function resize(Struct\Resize $resize)
+	public function transform(Struct\Transformation $transformationObject)
 	{
-		$newHeight = 0;
-		$newWidth = 0;
-
-		if ($resize->width == 0 && $resize->height > 0)
+		$transformation = new $transformationObject->className($this->_imageStruct, ((isset($transformationObject) && $transformationObject instanceof Struct\Transformation) ? $transformationObject->object : null));
+		if (!($transformation instanceof Transformation))
 		{
-			$newHeight = $resize->height;
-			$newWidth = $this->_imageWidth / ($this->_imageHeight / $resize->height);
+			throw new \Exception('Transformation is not instanceof \ImageStorage\Image\Transformation!');
 		}
-		elseif ($resize->height == 0 && $resize->width > 0)
+		$this->_imageStruct = $transformation->transform();
+		if (!($this->_imageStruct instanceof Struct\Image))
 		{
-			$newHeight = $this->_imageHeight / ($this->_imageWidth / $resize->width);
-			$newWidth = $resize->width;
+			throw new \Exception('Transformation return invalid data!');
 		}
-		elseif ($resize->width > 0 && $resize->height > 0)
-		{
-			if ($resize->scale == false)
-			{
-				$newHeight = $resize->height;
-				$newWidth = $resize->width;
-			}
-			else
-			{
-				if ($resize->height > $resize->width)
-				{
-					$newHeight = $resize->height;
-					$newWidth = $this->_imageWidth / ($this->_imageHeight / $resize->height);
-				}
-				else
-				{
-					$newHeight = $this->_imageHeight / ($this->_imageWidth / $resize->width);
-					$newWidth = $resize->width;
-				}
-			}
-		}
-		if ($newHeight != 0 && $newWidth != 0)
-		{
-			$newIm = imagecreatetruecolor($newWidth, $newHeight);
-			imagecopyresampled($newIm, $this->_imageObject, 0, 0, 0, 0, $newWidth, $newHeight, $this->_imageWidth, $this->_imageHeight);
-			$this->_imageObject = $newIm;
-			$this->_imageWidth = imagesx($newIm);
-			$this->_imageHeight = imagesy($newIm);
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param        $fileName
-	 *
-	 * @return bool
-	 */
-	public function watermark($fileName)
-	{
-		if (file_exists($fileName))
-		{
-			$image = $this->_loadImage($fileName);
-
-			if ($image)
-			{
-				list($watermarkObject, $watermarkWidth, $watermarkHeight) = $image;
-				imagecopyresampled($this->_imageObject, $watermarkObject, 0, 0, 0, 0, $watermarkWidth, $watermarkHeight, $watermarkWidth, $watermarkHeight);
-				return true;
-			}
-		}
-
-		return false;
+		return true;
 	}
 
 	/**
@@ -172,11 +103,11 @@ class Image
 		switch (strtolower($format))
 		{
 			case "png":
-				imagepng($this->_imageObject, $fileName, $quality);
+				imagepng($this->_imageStruct->image, $fileName, $quality);
 				break;
 
 			default:
-				imagejpeg($this->_imageObject, $fileName, $quality);
+				imagejpeg($this->_imageStruct->image, $fileName, $quality);
 				break;
 		}
 	}

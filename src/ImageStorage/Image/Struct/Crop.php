@@ -3,8 +3,11 @@ namespace ImageStorage\Image\Struct;
 class Crop
 {
 	public $x;
+
 	public $y;
+
 	public $width;
+
 	public $height;
 
 	public function __construct($x = 0, $y = 0, $width = 0, $height = 0)
