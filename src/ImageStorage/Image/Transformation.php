@@ -4,8 +4,13 @@ namespace ImageStorage\Image;
 interface Transformation
 {
 	/**
-	 * @param Struct\Image $imageStruct
+	 * @throws \Exception
 	 */
-	public function __construct(Struct\Image $imageStruct);
-	public function transform();
+	public function __construct();
+
+	/**
+	 * @return Struct\Image
+	 * @throws \Exception
+	 */
+	public function transform(Struct\Image $imageStruct);
 }

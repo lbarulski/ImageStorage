@@ -14,17 +14,27 @@ class Watermark implements \ImageStorage\Image\Transformation
 	private $_watermark = null;
 
 	/**
-	 * @param \ImageStorage\Image\Struct\Image     		$imageStruct
-	 * @param \ImageStorage\Image\Struct\Watermark|null $watermark
+	 * @param \ImageStorage\Image\Struct\Watermark $watermark
+	 * @throws \Exception
 	 */
-	public function __construct(\ImageStorage\Image\Struct\Image $imageStruct, \ImageStorage\Image\Struct\Watermark $watermark = null)
+	public function __construct(\ImageStorage\Image\Struct\Watermark $watermark = null)
 	{
-		$this->_imageStruct	= $imageStruct;
-		$this->_watermark	= $watermark;
+		if (!($watermark instanceof \ImageStorage\Image\Struct\Watermark))
+		{
+			throw new \Exception('Bad structure!');
+		}
+
+		$this->_watermark = $watermark;
 	}
 
-	public function transform()
+	/**
+	 * @param \ImageStorage\Image\Struct\Image $imageStruct
+	 *
+	 * @return \ImageStorage\Image\Struct\Image
+	 */
+	public function transform(\ImageStorage\Image\Struct\Image $imageStruct)
 	{
+		$this->_imageStruct	= $imageStruct;
 		return $this->_watermark();
 	}
 
@@ -37,6 +47,6 @@ class Watermark implements \ImageStorage\Image\Transformation
 			return $this->_imageStruct;
 		}
 
-		return false;
+		throw new \Exception('File '.$this->_watermark->fileName.' not exist!');
 	}
 }

@@ -14,17 +14,27 @@ class Resize implements \ImageStorage\Image\Transformation
 	private $_resize = null;
 
 	/**
-	 * @param \ImageStorage\Image\Struct\Image  		$imageStruct
-	 * @param \ImageStorage\Image\Struct\Resize|null 	$resize
+	 * @param \ImageStorage\Image\Struct\Resize $resize
+	 * @throws \Exception
 	 */
-	public function __construct(\ImageStorage\Image\Struct\Image $imageStruct, \ImageStorage\Image\Struct\Resize $resize = null)
+	public function __construct(\ImageStorage\Image\Struct\Resize $resize = null)
 	{
-		$this->_imageStruct	= $imageStruct;
-		$this->_resize		= $resize;
+		if (!($resize instanceof \ImageStorage\Image\Struct\Resize))
+		{
+			throw new \Exception('Bad structure!');
+		}
+		$this->_resize = $resize;
+
 	}
 
-	public function transform()
+	/**
+	 * @param \ImageStorage\Image\Struct\Image $imageStruct
+	 *
+	 * @return \ImageStorage\Image\Struct\Image
+	 */
+	public function transform(\ImageStorage\Image\Struct\Image $imageStruct)
 	{
+		$this->_imageStruct	= $imageStruct;
 		return $this->_resize();
 	}
 
@@ -68,9 +78,9 @@ class Resize implements \ImageStorage\Image\Transformation
 		{
 			$newIm = imagecreatetruecolor($newWidth, $newHeight);
 			imagecopyresampled($newIm, $this->_imageStruct->image, 0, 0, 0, 0, $newWidth, $newHeight, $this->_imageStruct->width, $this->_imageStruct->height);
-			return $newIm;
+			return new \ImageStorage\Image\Struct\Image($newIm, $newWidth, $newHeight);
 		}
 
-		return false;
+		throw new \Exception('Bad new size!');
 	}
 }

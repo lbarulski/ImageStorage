@@ -14,17 +14,26 @@ class Crop implements \ImageStorage\Image\Transformation
 	private $_crop = null;
 
 	/**
-	 * @param \ImageStorage\Image\Struct\Image 		$imageStruct
-	 * @param \ImageStorage\Image\Struct\Crop|null  $crop
+	 * @param \ImageStorage\Image\Struct\Crop $crop
+	 * @throws \Exception
 	 */
-	public function __construct(\ImageStorage\Image\Struct\Image $imageStruct, \ImageStorage\Image\Struct\Crop $crop = null)
+	public function __construct(\ImageStorage\Image\Struct\Crop $crop = null)
 	{
-		$this->_imageStruct = $imageStruct;
-		$this->_crop		= $crop;
+		if (!($crop instanceof \ImageStorage\Image\Struct\Crop))
+		{
+			throw new \Exception('Bad structure!');
+		}
+		$this->_crop = $crop;
 	}
 
-	public function transform()
+	/**
+	 * @param \ImageStorage\Image\Struct\Image $imageStruct
+	 *
+	 * @return \ImageStorage\Image\Struct\Image
+	 */
+	public function transform(\ImageStorage\Image\Struct\Image $imageStruct)
 	{
+		$this->_imageStruct = $imageStruct;
 		return $this->_crop();
 	}
 
@@ -32,6 +41,6 @@ class Crop implements \ImageStorage\Image\Transformation
 	{
 		$newIm = imagecreatetruecolor($this->_crop->width, $this->_crop->height);
 		imagecopyresized($newIm, $this->_imageStruct->image, 0, 0, $this->_crop->x, $this->_crop->y, $this->_crop->width, $this->_crop->height, $this->_crop->width, $this->_crop->height);
-		return $newIm;
+		return new \ImageStorage\Image\Struct\Image($newIm, $this->_crop->width, $this->_crop->height);
 	}
 }

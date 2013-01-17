@@ -73,19 +73,18 @@ class Image
 	}
 
 	/**
-	 * @param Struct\Transformation $transformationObject
+	 * @param Transformation $transformationObject
 	 *
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public function transform(Struct\Transformation $transformationObject)
+	public function transform(\ImageStorage\Image\Transformation $transformationObject)
 	{
-		$transformation = new $transformationObject->className($this->_imageStruct, ((isset($transformationObject) && $transformationObject instanceof Struct\Transformation) ? $transformationObject->object : null));
-		if (!($transformation instanceof Transformation))
+		if (!($transformationObject instanceof Transformation))
 		{
 			throw new \Exception('Transformation is not instanceof \ImageStorage\Image\Transformation!');
 		}
-		$this->_imageStruct = $transformation->transform();
+		$this->_imageStruct = $transformationObject->transform($this->_imageStruct);
 		if (!($this->_imageStruct instanceof Struct\Image))
 		{
 			throw new \Exception('Transformation return invalid data!');
