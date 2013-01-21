@@ -62,7 +62,7 @@ class Resize implements \ImageStorage\Image\Transformation
 			}
 			else
 			{
-				if ($this->_resize->height > $this->_resize->width)
+				if ($this->_imageStruct->height > $this->_imageStruct->width)
 				{
 					$newHeight = $this->_resize->height;
 					$newWidth = $this->_imageStruct->width / ($this->_imageStruct->height / $this->_resize->height);
