@@ -4,7 +4,7 @@ namespace ImageStorage\Image;
 class Image
 {
 	/**
-	 * @var Struct\Image
+	 * @var Structure\Image
 	 */
 	private $_imageStruct;
 
@@ -33,14 +33,14 @@ class Image
 	 */
 	public function __construct($file)
 	{
-		$this->_imageStruct = new Struct\Image;
+		$this->_imageStruct = new Structure\Image;
 		$this->_load($file);
 	}
 
 	/**
 	 * @param $file
 	 *
-	 * @return Struct\Image
+	 * @return Structure\Image
 	 * @throws \Exception
 	 */
 	public static function loadImage($file)
@@ -69,7 +69,7 @@ class Image
 				throw new \Exception('Invalid file type!');
 		}
 
-		return new Struct\Image($im, $imageInformation[0], $imageInformation[1]);
+		return new Structure\Image($im, $imageInformation[0], $imageInformation[1]);
 	}
 
 	/**
@@ -85,7 +85,7 @@ class Image
 			throw new \Exception('Transformation is not instanceof \ImageStorage\Image\Transformation!');
 		}
 		$this->_imageStruct = $transformationObject->transform($this->_imageStruct);
-		if (!($this->_imageStruct instanceof Struct\Image))
+		if (!($this->_imageStruct instanceof Structure\Image))
 		{
 			throw new \Exception('Transformation return invalid data!');
 		}

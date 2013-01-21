@@ -1,6 +1,6 @@
 <?php
 namespace ImageStorage\Image;
-interface Struct
+interface Structure
 {
 	public function __construct();
 }

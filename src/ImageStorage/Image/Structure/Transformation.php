@@ -1,5 +1,5 @@
 <?php
-namespace ImageStorage\Image\Struct;
+namespace ImageStorage\Image\Structure;
 class Transformation
 {
 	public $className;

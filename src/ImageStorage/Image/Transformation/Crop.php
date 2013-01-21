@@ -4,22 +4,22 @@ namespace ImageStorage\Image\Transformation;
 class Crop implements \ImageStorage\Image\Transformation
 {
 	/**
-	 * @var \ImageStorage\Image\Struct\Image
+	 * @var \ImageStorage\Image\Structure\Image
 	 */
 	private $_imageStruct;
 
 	/**
-	 * @var \ImageStorage\Image\Struct\Crop|null
+	 * @var \ImageStorage\Image\Structure\Crop|null
 	 */
 	private $_crop = null;
 
 	/**
-	 * @param \ImageStorage\Image\Struct\Crop $crop
+	 * @param \ImageStorage\Image\Structure\Crop $crop
 	 * @throws \Exception
 	 */
-	public function __construct(\ImageStorage\Image\Struct\Crop $crop = null)
+	public function __construct(\ImageStorage\Image\Structure\Crop $crop = null)
 	{
-		if (!($crop instanceof \ImageStorage\Image\Struct\Crop))
+		if (!($crop instanceof \ImageStorage\Image\Structure\Crop))
 		{
 			throw new \Exception('Bad structure!');
 		}
@@ -27,11 +27,11 @@ class Crop implements \ImageStorage\Image\Transformation
 	}
 
 	/**
-	 * @param \ImageStorage\Image\Struct\Image $imageStruct
+	 * @param \ImageStorage\Image\Structure\Image $imageStruct
 	 *
-	 * @return \ImageStorage\Image\Struct\Image
+	 * @return \ImageStorage\Image\Structure\Image
 	 */
-	public function transform(\ImageStorage\Image\Struct\Image $imageStruct)
+	public function transform(\ImageStorage\Image\Structure\Image $imageStruct)
 	{
 		$this->_imageStruct = $imageStruct;
 		return $this->_crop();
@@ -41,6 +41,6 @@ class Crop implements \ImageStorage\Image\Transformation
 	{
 		$newIm = imagecreatetruecolor($this->_crop->width, $this->_crop->height);
 		imagecopyresized($newIm, $this->_imageStruct->image, 0, 0, $this->_crop->x, $this->_crop->y, $this->_crop->width, $this->_crop->height, $this->_crop->width, $this->_crop->height);
-		return new \ImageStorage\Image\Struct\Image($newIm, $this->_crop->width, $this->_crop->height);
+		return new \ImageStorage\Image\Structure\Image($newIm, $this->_crop->width, $this->_crop->height);
 	}
 }

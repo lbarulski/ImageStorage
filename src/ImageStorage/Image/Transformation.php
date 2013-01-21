@@ -9,8 +9,8 @@ interface Transformation
 	public function __construct();
 
 	/**
-	 * @return Struct\Image
+	 * @return Structure\Image
 	 * @throws \Exception
 	 */
-	public function transform(Struct\Image $imageStruct);
+	public function transform(Structure\Image $imageStruct);
 }

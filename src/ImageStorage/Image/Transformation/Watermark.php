@@ -4,22 +4,22 @@ namespace ImageStorage\Image\Transformation;
 class Watermark implements \ImageStorage\Image\Transformation
 {
 	/**
-	 * @var \ImageStorage\Image\Struct\Image
+	 * @var \ImageStorage\Image\Structure\Image
 	 */
 	private $_imageStruct;
 
 	/**
-	 * @var \ImageStorage\Image\Struct\Watermark|null
+	 * @var \ImageStorage\Image\Structure\Watermark|null
 	 */
 	private $_watermark = null;
 
 	/**
-	 * @param \ImageStorage\Image\Struct\Watermark $watermark
+	 * @param \ImageStorage\Image\Structure\Watermark $watermark
 	 * @throws \Exception
 	 */
-	public function __construct(\ImageStorage\Image\Struct\Watermark $watermark = null)
+	public function __construct(\ImageStorage\Image\Structure\Watermark $watermark = null)
 	{
-		if (!($watermark instanceof \ImageStorage\Image\Struct\Watermark))
+		if (!($watermark instanceof \ImageStorage\Image\Structure\Watermark))
 		{
 			throw new \Exception('Bad structure!');
 		}
@@ -28,11 +28,11 @@ class Watermark implements \ImageStorage\Image\Transformation
 	}
 
 	/**
-	 * @param \ImageStorage\Image\Struct\Image $imageStruct
+	 * @param \ImageStorage\Image\Structure\Image $imageStruct
 	 *
-	 * @return \ImageStorage\Image\Struct\Image
+	 * @return \ImageStorage\Image\Structure\Image
 	 */
-	public function transform(\ImageStorage\Image\Struct\Image $imageStruct)
+	public function transform(\ImageStorage\Image\Structure\Image $imageStruct)
 	{
 		$this->_imageStruct	= $imageStruct;
 		return $this->_watermark();
