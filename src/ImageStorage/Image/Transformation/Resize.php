@@ -68,7 +68,7 @@ class Resize implements \ImageStorage\Image\Transformation
 					$struct = new \ImageStorage\Image\Structure\Crop($margin, 0, $this->_imageStruct->height, $this->_imageStruct->height);
 				}
 				$crop = new Crop($struct);
-				$crop->transform($this->_imageStruct);
+				$this->_imageStruct = $crop->transform($this->_imageStruct);
 //				$newHeight = $this->_resize->height;
 //				$newWidth = $this->_resize->width;
 			}
