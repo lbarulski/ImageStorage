@@ -4,12 +4,12 @@ class Resize
 {
 	public $width;
 	public $height;
-	public $scale;
+	public $crop;
 
-	public function __construct($width = 0, $height = 0, $scale = true)
+	public function __construct($width = 0, $height = 0, $crop = true)
 	{
 		$this->width 	= $width;
 		$this->height 	= $height;
-		$this->scale 	= $scale;
+		$this->crop 	= $crop;
 	}
 }

@@ -55,7 +55,7 @@ class Resize implements \ImageStorage\Image\Transformation
 		}
 		elseif ($this->_resize->width > 0 && $this->_resize->height > 0)
 		{
-			if ($this->_resize->scale == false)
+			if ($this->_resize->crop == false)
 			{
 				if ($this->_imageStruct->height > $this->_imageStruct->width)
 				{
