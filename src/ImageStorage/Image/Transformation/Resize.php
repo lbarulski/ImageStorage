@@ -83,13 +83,11 @@ class Resize implements \ImageStorage\Image\Transformation
 				$newWidth = $this->_resize->width;
 			}
 		}
-		if ($newHeight != 0 && $newWidth != 0)
+		if ($newHeight <= $this->_imageStruct->height && $newWidth <= $this->_imageStruct->width)
 		{
 			$newIm = imagecreatetruecolor($newWidth, $newHeight);
 			imagecopyresampled($newIm, $this->_imageStruct->image, 0, 0, 0, 0, $newWidth, $newHeight, $this->_imageStruct->width, $this->_imageStruct->height);
 			return new \ImageStorage\Image\Structure\Image($newIm, $newWidth, $newHeight);
 		}
-
-		throw new \Exception('Bad new size!');
 	}
 }
