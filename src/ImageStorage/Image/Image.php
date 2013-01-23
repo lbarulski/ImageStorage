@@ -45,6 +45,8 @@ class Image
 	 */
 	public static function loadImage($file)
 	{
+		self::convertPDF($file);
+
 		$imageInformation = getimagesize($file);
 
 		switch ($imageInformation[2])
@@ -70,6 +72,25 @@ class Image
 		}
 
 		return new Structure\Image($im, $imageInformation[0], $imageInformation[1]);
+	}
+
+	protected static function convertPDF($file)
+	{
+		if ("%PDF-" === file_get_contents($file, null, null, 0, 5))
+		{
+			// magic!
+			if (class_exists('Imagick'))
+			{
+				$img = new \Imagick($file . '[0]');
+				$img->setimageformat("jpg");
+				$img->writeimage($file);
+			}
+			else
+			{
+				exec(sprintf('convert %s %s', escapeshellarg($file), escapeshellarg($file . '.jpg')));
+				rename($file . '.jpg', $file);
+			}
+		}
 	}
 
 	/**
@@ -118,4 +139,3 @@ class Image
 	}
 }
 
-?>
