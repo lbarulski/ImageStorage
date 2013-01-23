@@ -371,7 +371,7 @@ class S3
 
 		if ($location !== false)
 		{
-			$dom = new DOMDocument;
+			$dom = new \DOMDocument;
 			$createBucketConfiguration = $dom->createElement('CreateBucketConfiguration');
 			$locationConstraint = $dom->createElement('LocationConstraint', $location);
 			$createBucketConfiguration->appendChild($locationConstraint);
