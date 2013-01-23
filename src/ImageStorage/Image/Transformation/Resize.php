@@ -89,5 +89,6 @@ class Resize implements \ImageStorage\Image\Transformation
 			imagecopyresampled($newIm, $this->_imageStruct->image, 0, 0, 0, 0, $newWidth, $newHeight, $this->_imageStruct->width, $this->_imageStruct->height);
 			return new \ImageStorage\Image\Structure\Image($newIm, $newWidth, $newHeight);
 		}
+		return $this->_imageStruct;
 	}
 }
