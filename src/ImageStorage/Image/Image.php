@@ -131,5 +131,11 @@ class Image
 				break;
 		}
 	}
+
+
+	public function __clone()
+	{
+		$this->_imageStruct = clone $this->_imageStruct;
+	}
 }
 

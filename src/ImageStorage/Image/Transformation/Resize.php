@@ -55,32 +55,39 @@ class Resize implements \ImageStorage\Image\Transformation
 		}
 		elseif ($this->_resize->width > 0 && $this->_resize->height > 0)
 		{
-			if ($this->_resize->scale == false)
+			if ($this->_resize->crop == false)
 			{
-				$newHeight = $this->_resize->height;
-				$newWidth = $this->_resize->width;
-			}
-			else
-			{
-				if ($this->_resize->height > $this->_resize->width)
+				if ($this->_imageStruct->height > $this->_imageStruct->width)
 				{
-					$newHeight = $this->_resize->height;
-					$newWidth = $this->_imageStruct->width / ($this->_imageStruct->height / $this->_resize->height);
+					$margin = ($this->_imageStruct->height-$this->_imageStruct->width)/2;
+					$struct = new \ImageStorage\Image\Structure\Crop(0, $margin, $this->_imageStruct->width, $this->_imageStruct->width);
 				}
 				else
 				{
-					$newHeight = $this->_imageStruct->height / ($this->_imageStruct->width / $this->_resize->width);
-					$newWidth = $this->_resize->width;
+					$margin = ($this->_imageStruct->width-$this->_imageStruct->height)/2;
+					$struct = new \ImageStorage\Image\Structure\Crop($margin, 0, $this->_imageStruct->height, $this->_imageStruct->height);
 				}
+				$crop = new Crop($struct);
+				$this->_imageStruct = $crop->transform($this->_imageStruct);
+//				$newHeight = $this->_resize->height;
+//				$newWidth = $this->_resize->width;
+			}
+			if ($this->_imageStruct->height > $this->_imageStruct->width)
+			{
+				$newHeight = $this->_resize->height;
+				$newWidth = $this->_imageStruct->width / ($this->_imageStruct->height / $this->_resize->height);
+			}
+			else
+			{
+				$newHeight = $this->_imageStruct->height / ($this->_imageStruct->width / $this->_resize->width);
+				$newWidth = $this->_resize->width;
 			}
 		}
-		if ($newHeight != 0 && $newWidth != 0)
+		if ($newHeight <= $this->_imageStruct->height && $newWidth <= $this->_imageStruct->width)
 		{
 			$newIm = imagecreatetruecolor($newWidth, $newHeight);
 			imagecopyresampled($newIm, $this->_imageStruct->image, 0, 0, 0, 0, $newWidth, $newHeight, $this->_imageStruct->width, $this->_imageStruct->height);
 			return new \ImageStorage\Image\Structure\Image($newIm, $newWidth, $newHeight);
 		}
-
-		throw new \Exception('Bad new size!');
 	}
 }
