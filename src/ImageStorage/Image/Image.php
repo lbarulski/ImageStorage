@@ -87,7 +87,7 @@ class Image
 			}
 			else
 			{
-				exec(sprintf('convert %s %s', escapeshellarg($file), escapeshellarg($file . '.jpg')));
+				exec(sprintf('convert %s[0] %s', escapeshellarg($file), escapeshellarg($file . '.jpg')));
 				rename($file . '.jpg', $file);
 			}
 		}
