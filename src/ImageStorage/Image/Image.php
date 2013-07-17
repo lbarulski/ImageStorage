@@ -45,7 +45,7 @@ class Image
 	 */
 	public static function loadImage($file)
 	{
-		self::convertPDF($file);
+		# self::convertPDF($file);
 
 		$imageInformation = getimagesize($file);
 
