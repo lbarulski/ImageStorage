@@ -43,7 +43,7 @@ class Watermark implements \ImageStorage\Image\Transformation
 		if (file_exists($this->_watermark->fileName))
 		{
 			$image = \ImageStorage\Image\Image::loadImage($this->_watermark->fileName);
-			imagecopyresampled($this->_imageStruct->image, $image->image, 0, 0, 0, 0, $image->width, $image->height, $image->width, $image->height);
+			imagecopyresampled($this->_imageStruct->image, $image->image, 0, 0, 0, 0, max($image->width, $this->_imageStruct->width), max($image->height, $this->_imageStruct->height), $image->width, $image->height);
 			return $this->_imageStruct;
 		}
 
