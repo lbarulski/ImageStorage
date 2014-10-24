@@ -1,6 +1,9 @@
 <?php
 namespace ImageStorage\Image\Transformation;
 
+use ImageStorage\Image\Transformation\Blur;
+use ImageStorage\Image\Structure\Blur as BlurStructure;
+
 class Resize implements \ImageStorage\Image\Transformation
 {
 	/**
@@ -23,8 +26,8 @@ class Resize implements \ImageStorage\Image\Transformation
 		{
 			throw new \Exception('Bad structure!');
 		}
-		$this->_resize = $resize;
 
+		$this->_resize = $resize;
 	}
 
 	/**
@@ -35,7 +38,16 @@ class Resize implements \ImageStorage\Image\Transformation
 	public function transform(\ImageStorage\Image\Structure\Image $imageStruct)
 	{
 		$this->_imageStruct	= $imageStruct;
-		return $this->_resize();
+
+		$imageStruct = $this->_resize();
+
+		if ($this->_resize->blur)
+		{
+			$blur = new Blur(new BlurStructure((int) $this->_resize->blur));
+			$imageStruct = $blur->transform($imageStruct);
+		}
+
+		return $imageStruct;
 	}
 
 	private function _resize()
