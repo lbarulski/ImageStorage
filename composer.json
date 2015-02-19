@@ -4,6 +4,9 @@
         "ext-gd": "0",
         "ext-curl": "0"
     },
+    "suggest": {
+        "ext-imagick": "to use the Imagick implementation",
+    },
     "authors": [
         {
             "name": "lbarulski",
