@@ -5,7 +5,7 @@
         "ext-curl": "0"
     },
     "suggest": {
-        "ext-imagick": "to use the Imagick implementation",
+        "ext-imagick": "to use the Imagick implementation"
     },
     "authors": [
         {
