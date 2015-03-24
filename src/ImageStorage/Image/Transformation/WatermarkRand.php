@@ -46,116 +46,88 @@ class WatermarkRand implements \ImageStorage\Image\Transformation
 	 */
 	private function _watermark_rand()
 	{
-		if (file_exists($this->_watermarkRand->fileName))
+		if (false === file_exists($this->_watermarkRand->fileName))
 		{
+			throw new \Exception('File ' . $this->_watermarkRand->fileName . ' not exist!');
+		}
 
+		$config = $this->_watermarkRand;
 
-			$config = $this->_watermarkRand;
-
-
-			if (class_exists('\Imagick'))
-			{
-
-
-				//prepare source in Imagick
-				$source = new \Imagick();
-				$source->readImageBlob($this->getPngBlobFromGd($this->_imageStruct->image));
-
-				//prepare watermark
-				$watermark        = new \Imagick($this->_watermarkRand->fileName);
-				$maxWatermarkSize = $source->getImageWidth() * $config->getSize();
-				if ($maxWatermarkSize < $config->getMinSize())
-				{
-					$maxWatermarkSize = $config->getMinSize();
-				}
-
-				$watermark->thumbnailImage($maxWatermarkSize, $maxWatermarkSize);
-
-				//cache image size
-				$imageWidth  = $source->getImageWidth();
-				$imageHeight = $source->getImageHeight();
-
-				//set max watermarks
-				$maxCols = $imageWidth / $config->getMinSize() / 2;
-				if ($maxCols < $config->getCols())
-				{
-					$config->setCols(ceil($maxCols));
-				}
-
-				$maxRows = $imageHeight / $config->getMinSize() / 2;
-				if ($maxRows < $config->getRows())
-				{
-					$config->setRows(ceil($maxRows));
-				}
-
-
-				//step width
-				$stepWidth  = $imageWidth / $config->getCols();
-				$stepHeight = $imageHeight / $config->getRows();
-
-				//put images
-				for ($row = 0; $row < $config->getRows(); $row++)
-				{
-					for ($col = 0; $col < $config->getCols(); $col++)
-					{
-						$x = rand($col * $stepWidth, ($col + 1) * $stepWidth);
-						$y = rand($row * $stepHeight, ($row + 1) * $stepHeight);
-
-						//make sure that watermark is in image bound
-						if (($x + $maxWatermarkSize) > $imageWidth)
-						{
-							$x = $imageWidth - $maxWatermarkSize;
-						}
-
-						if (($y + $maxWatermarkSize) > $imageHeight)
-						{
-							$y = $imageHeight - $maxWatermarkSize;
-						}
-
-						//put watermark to image
-						$source->compositeImage($watermark, \Imagick::COMPOSITE_OVER, $x, $y);
-					}
-				}
-
-
-				//now put logo in right bottom corner
-
-
-
-
-				$logoUrl = dirname($this->_watermarkRand->fileName) . DIRECTORY_SEPARATOR . 'logo_'.c("LANGUAGE").'.png';
-
-				if(false === is_file($logoUrl)){
-					$logoUrl = dirname($this->_watermarkRand->fileName) . DIRECTORY_SEPARATOR . 'logo.png';
-				}
-
-
-
-				$watermark = new \Imagick($logoUrl);
-
-				$size = $imageWidth * 0.3;
-
-				if ($size > 50)
-				{
-					$watermark->thumbnailImage($size, $size, true);
-
-					$x = $imageWidth - $watermark->getImageWidth();
-					$y = $imageHeight - $watermark->getImageHeight();
-					$source->compositeImage($watermark, \Imagick::COMPOSITE_OVER, $x, $y);
-
-
-				}
-
-				$this->_imageStruct->image = imagecreatefromstring($source->getImageBlob());
-			}
-
+		if (false === class_exists('\Imagick'))
+		{
 			return $this->_imageStruct;
 		}
 
-		throw new \Exception('File ' . $this->_watermarkRand->fileName . ' not exist!');
+		//prepare source in Imagick
+		$source = new \Imagick();
+		$source->readImageBlob($this->getPngBlobFromGd($this->_imageStruct->image));
+
+		//prepare watermark
+		$watermark        = new \Imagick($this->_watermarkRand->fileName);
+		$maxWatermarkSize = $source->getImageWidth() * $config->getSize();
+		if ($maxWatermarkSize < $config->getMinSize())
+		{
+			$maxWatermarkSize = $config->getMinSize();
+		}
+
+		$watermark->thumbnailImage($maxWatermarkSize, $maxWatermarkSize);
+
+		//cache image size
+		$imageWidth  = $source->getImageWidth();
+		$imageHeight = $source->getImageHeight();
+
+		//set max watermarks
+		$maxCols = $imageWidth / $config->getMinSize() / 2;
+		if ($maxCols < $config->getCols())
+		{
+			$config->setCols(ceil($maxCols));
+		}
+
+		$maxRows = $imageHeight / $config->getMinSize() / 2;
+		if ($maxRows < $config->getRows())
+		{
+			$config->setRows(ceil($maxRows));
+		}
+
+
+		//step width
+		$stepWidth  = $imageWidth / $config->getCols();
+		$stepHeight = $imageHeight / $config->getRows();
+
+		//put images
+		for ($row = 0; $row < $config->getRows(); $row++)
+		{
+			for ($col = 0; $col < $config->getCols(); $col++)
+			{
+				$x = rand($col * $stepWidth, ($col + 1) * $stepWidth);
+				$y = rand($row * $stepHeight, ($row + 1) * $stepHeight);
+
+				//make sure that watermark is in image bound
+				if (($x + $maxWatermarkSize) > $imageWidth)
+				{
+					$x = $imageWidth - $maxWatermarkSize;
+				}
+
+				if (($y + $maxWatermarkSize) > $imageHeight)
+				{
+					$y = $imageHeight - $maxWatermarkSize;
+				}
+
+				//put watermark to image
+				$source->compositeImage($watermark, \Imagick::COMPOSITE_OVER, $x, $y);
+			}
+		}
+
+		$this->_imageStruct->image = imagecreatefromstring($source->getImageBlob());
+
+		return $this->_imageStruct;
 	}
 
-
+	/**
+	 * @param $image
+	 *
+	 * @return string
+	 */
 	private function getPngBlobFromGd($image)
 	{
 		ob_start();
