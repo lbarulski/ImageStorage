@@ -60,7 +60,7 @@ class WatermarkRand implements \ImageStorage\Image\Transformation
 
 		//prepare source in Imagick
 		$source = new \Imagick();
-		$source->readImageBlob($this->getPngBlobFromGd($this->_imageStruct->image));
+		$source->readImageBlob($this->getJpgBlobFromGd($this->_imageStruct->image));
 
 		//prepare watermark
 		$watermark        = new \Imagick($this->_watermarkRand->fileName);
@@ -117,6 +117,7 @@ class WatermarkRand implements \ImageStorage\Image\Transformation
 				$source->compositeImage($watermark, \Imagick::COMPOSITE_OVER, $x, $y);
 			}
 		}
+		$source->setImageFormat("jpeg");
 
 		$this->_imageStruct->image = imagecreatefromstring($source->getImageBlob());
 
@@ -128,10 +129,10 @@ class WatermarkRand implements \ImageStorage\Image\Transformation
 	 *
 	 * @return string
 	 */
-	private function getPngBlobFromGd($image)
+	private function getJpgBlobFromGd($image)
 	{
 		ob_start();
-		imagepng($image);
+		imagejpeg($image);
 		$imageBlob = ob_get_clean();
 
 		return $imageBlob;
