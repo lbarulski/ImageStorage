@@ -1,8 +1,8 @@
 {
     "name": "lbarulski/image-storage",
     "require": {
-        "ext-gd": "0",
-        "ext-curl": "0"
+        "ext-gd": "*",
+        "ext-curl": "*"
     },
     "suggest": {
         "ext-imagick": "to use the Imagick implementation"
