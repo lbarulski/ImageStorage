@@ -706,7 +706,7 @@ class S3
 			if (!$aclReadSet || !$aclWriteSet) self::setAccessControlPolicy($targetBucket, '', $acp);
 		}
 
-		$dom = new DOMDocument;
+		$dom = new \DOMDocument;
 		$bucketLoggingStatus = $dom->createElement('BucketLoggingStatus');
 		$bucketLoggingStatus->setAttribute('xmlns', 'http://s3.amazonaws.com/doc/2006-03-01/');
 		if ($targetBucket !== null)
@@ -813,7 +813,7 @@ class S3
 	 */
 	public static function setAccessControlPolicy($bucket, $uri = '', $acp = array())
 	{
-		$dom = new DOMDocument;
+		$dom = new \DOMDocument;
 		$dom->formatOutput = true;
 		$accessControlPolicy = $dom->createElement('AccessControlPolicy');
 		$accessControlList = $dom->createElement('AccessControlList');
@@ -1034,13 +1034,13 @@ class S3
 												   $maxFileSize = 5242880, $successRedirect = "201", $amzHeaders = array(), $headers = array(), $flashVars = false)
 	{
 		// Create policy object
-		$policy = new stdClass;
+		$policy = new \stdClass;
 		$policy->expiration = gmdate('Y-m-d\TH:i:s\Z', (time() + $lifetime));
 		$policy->conditions = array();
-		$obj = new stdClass; $obj->bucket = $bucket; array_push($policy->conditions, $obj);
-		$obj = new stdClass; $obj->acl = $acl; array_push($policy->conditions, $obj);
+		$obj = new \stdClass; $obj->bucket = $bucket; array_push($policy->conditions, $obj);
+		$obj = new \stdClass; $obj->acl = $acl; array_push($policy->conditions, $obj);
 
-		$obj = new stdClass; // 200 for non-redirect uploads
+		$obj = new \stdClass; // 200 for non-redirect uploads
 		if (is_numeric($successRedirect) && in_array((int)$successRedirect, array(200, 201)))
 			$obj->success_action_status = (string)$successRedirect;
 		else // URL
@@ -1056,7 +1056,7 @@ class S3
 			array_push($policy->conditions, array('starts-with', '$'.$headerKey, ''));
 		foreach ($amzHeaders as $headerKey => $headerVal)
 		{
-			$obj = new stdClass;
+			$obj = new \stdClass;
 			$obj->{$headerKey} = (string)$headerVal;
 			array_push($policy->conditions, $obj);
 		}
@@ -1064,7 +1064,7 @@ class S3
 		$policy = base64_encode(str_replace('\/', '/', json_encode($policy)));
 
 		// Create parameters
-		$params = new stdClass;
+		$params = new \stdClass;
 		$params->AWSAccessKeyId = self::$__accessKey;
 		$params->key = $uriPrefix.'${filename}';
 		$params->acl = $acl;
@@ -1128,7 +1128,7 @@ class S3
 			self::__triggerError(sprintf("S3::createDistribution({$bucket}, ".(int)$enabled.", [], '$comment'): [%s] %s",
 				$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
-		} elseif ($rest->body instanceof SimpleXMLElement)
+		} elseif ($rest->body instanceof \SimpleXMLElement)
 			return self::__parseCloudFrontDistributionConfig($rest->body);
 		return false;
 	}
@@ -1164,7 +1164,7 @@ class S3
 				$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
-		elseif ($rest->body instanceof SimpleXMLElement)
+		elseif ($rest->body instanceof \SimpleXMLElement)
 		{
 			$dist = self::__parseCloudFrontDistributionConfig($rest->body);
 			$dist['hash'] = $rest->headers['hash'];
@@ -1291,7 +1291,7 @@ class S3
 				$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
-		elseif ($rest->body instanceof SimpleXMLElement && isset($rest->body->DistributionSummary))
+		elseif ($rest->body instanceof \SimpleXMLElement && isset($rest->body->DistributionSummary))
 		{
 			$list = array();
 			if (isset($rest->body->Marker, $rest->body->MaxItems, $rest->body->IsTruncated))
@@ -1387,14 +1387,14 @@ class S3
 
 
 	/**
-	 * Get a InvalidationBatch DOMDocument
+	 * Get a InvalidationBatch \DOMDocument
 	 *
 	 * @internal Used to create XML in invalidateDistribution()
 	 * @param array $paths Paths to objects to invalidateDistribution
 	 * @return string
 	 */
 	private static function __getCloudFrontInvalidationBatchXML($paths, $callerReference = '0') {
-		$dom = new DOMDocument('1.0', 'UTF-8');
+		$dom = new \DOMDocument('1.0', 'UTF-8');
 		$dom->formatOutput = true;
 		$invalidationBatch = $dom->createElement('InvalidationBatch');
 		foreach ($paths as $path)
@@ -1445,7 +1445,7 @@ class S3
 				$rest->error['code'], $rest->error['message']), E_USER_WARNING);
 			return false;
 		}
-		elseif ($rest->body instanceof SimpleXMLElement && isset($rest->body->InvalidationSummary))
+		elseif ($rest->body instanceof \SimpleXMLElement && isset($rest->body->InvalidationSummary))
 		{
 			$list = array();
 			foreach ($rest->body->InvalidationSummary as $summary)
@@ -1458,7 +1458,7 @@ class S3
 
 
 	/**
-	 * Get a DistributionConfig DOMDocument
+	 * Get a DistributionConfig \DOMDocument
 	 *
 	 * http://docs.amazonwebservices.com/AmazonCloudFront/latest/APIReference/index.html?PutConfig.html
 	 *
@@ -1475,7 +1475,7 @@ class S3
 	 */
 	private static function __getCloudFrontDistributionConfigXML($bucket, $enabled, $comment, $callerReference = '0', $cnames = array(), $defaultRootObject = null, $originAccessIdentity = null, $trustedSigners = array())
 	{
-		$dom = new DOMDocument('1.0', 'UTF-8');
+		$dom = new \DOMDocument('1.0', 'UTF-8');
 		$dom->formatOutput = true;
 		$distributionConfig = $dom->createElement('DistributionConfig');
 		$distributionConfig->setAttribute('xmlns', 'http://cloudfront.amazonaws.com/doc/2010-11-01/');
