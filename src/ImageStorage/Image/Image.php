@@ -97,7 +97,7 @@ class Image
 	protected static function convertOrientation($file)
 	{
         if (!class_exists('Imagick')) {
-            trigger_error("Imagick not found! Orientation conversion cannot be done!");
+            trigger_error("Imagick not found! Orientation conversion cannot be done!", E_USER_WARNING);
             return;
         }
 
