@@ -46,6 +46,7 @@ class Image
 	public static function loadImage($file)
 	{
 		self::convertPDF($file);
+		self::convertOrientation($file);
 
 		$imageInformation = getimagesize($file);
 
@@ -91,6 +92,29 @@ class Image
 				rename($file . '.jpg', $file);
 			}
 		}
+	}
+
+	protected static function convertOrientation($file)
+	{
+        if (!class_exists('Imagick')) {
+            trigger_error("Imagick not found! Orientation conversion cannot be done!", E_USER_WARNING);
+            return;
+        }
+
+        $imagick = new \Imagick($file);
+
+        switch($imagick->getImageOrientation()) {
+            case 8:
+                $imagick->rotateImage($imagick->getImageBackgroundColor(),-90);
+                break;
+            case 3:
+                $imagick->rotateImage($imagick->getImageBackgroundColor(),180);
+                break;
+            case 6:
+                $imagick->rotateImage($imagick->getImageBackgroundColor(),90);
+                break;
+        }
+        $imagick->writeimage($file);
 	}
 
 	/**
